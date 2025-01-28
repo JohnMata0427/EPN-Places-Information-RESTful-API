@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Place } from 'src/interfaces/place.interface';
+import { SearchPlace } from 'src/interfaces/search-place.interface';
 
 @Injectable()
 export class PlaceService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllPlaces(): Promise<Place[]> {
-    return await this.prisma.place.findMany();
+  async getAllPlaces(): Promise<SearchPlace[]> {
+    return await this.prisma.place.findMany({
+      select: {
+        id: true,
+        name: true,
+      }
+    });
   }
 
   async getPlaceById(id: number): Promise<Place | null> {

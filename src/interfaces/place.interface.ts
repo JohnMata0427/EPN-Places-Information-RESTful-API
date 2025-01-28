@@ -1,6 +1,8 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 
 export class Place {
+  @IsNumberString({}, { message: 'El id debe ser un número' })
+  @IsNotEmpty({ message: 'El id es requerido' })
   id: number;
 
   @IsString({ message: 'El nombre debe ser un texto' })
@@ -11,8 +13,8 @@ export class Place {
   @IsNotEmpty({ message: 'La descripción es requerida' })
   description: string;
 
-  @IsString({ message: 'La dirección debe ser un texto' })
-  funFacts: string;
+  @IsNotEmpty({ message: 'Debe haber al menos un dato curioso' })
+  funFacts: string[];
 
   imageUrl: string;
 }

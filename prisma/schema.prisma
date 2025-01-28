@@ -14,9 +14,9 @@ datasource db {
 }
 
 model Place {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
-  description String @db.VarChar(1000)
+  id          Int      @id
+  name        String   @unique
+  description String   @db.VarChar(1000)
   imageUrl    String
-  funFacts    String @default("No existen datos curiosos") @db.VarChar(1000)
+  funFacts    String[] @db.VarChar(1000)
 }
