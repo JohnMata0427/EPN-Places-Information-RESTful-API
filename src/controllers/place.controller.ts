@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Query, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { Place as PlaceModel } from "@prisma/client";
 import { Response } from "express";
-import { Place } from "src/interfaces/place.interface";
+import { Place, UpdatePlace as UpdatePlaceModel } from "src/interfaces/place.interface";
 import { SearchPlace } from "src/interfaces/search-place.interface";
 import { PlaceService } from "src/services/place.service";
 import { CloudinaryService } from "src/services/cloudinary.service";
@@ -38,13 +38,22 @@ export class PlaceController {
       response.status(CREATED).json(place);
     } catch (error) {
       response.status(BAD_REQUEST).json(BadRequestResponse);
+      console.log(error)
     }
   }
 
   @Put(":id")
-  async updatePlaceById(@Res() response: Response, @Param("id", ParseIntPipe) id: number, @Body() body: Place): Promise<void> {
-    const place: PlaceModel = await this.placeService.updatePlaceById(id, body);
-    response.status(place ? OK : NOT_FOUND).json(place ?? NotFoundResponse);
+  @UseInterceptors(FileInterceptor("image"))
+  async updatePlaceById(@Res() response: Response, @Param("id", ParseIntPipe) id: number, @Body() body: UpdatePlaceModel, @UploadedFile() image: Express.Multer.File): Promise<void> {
+    try {
+      if (image) {
+        const cloudinaryResponse = await this.cloudinary.uploadFile(image);
+        body.imageUrl = cloudinaryResponse.secure_url;
+      }
+
+      const place: UpdatePlaceModel = await this.placeService.updatePlaceById(id, body);
+      response.status(place ? OK : NOT_FOUND).json(place ?? NotFoundResponse);
+    } catch {}
   }
 
   @Delete(":id")

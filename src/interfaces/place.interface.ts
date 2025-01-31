@@ -18,3 +18,13 @@ export class Place {
 
   imageUrl: string;
 }
+
+export class UpdatePlace {
+  name: string;
+  
+  description: string;
+
+  funFacts: string[];
+
+  imageUrl: string;
+}

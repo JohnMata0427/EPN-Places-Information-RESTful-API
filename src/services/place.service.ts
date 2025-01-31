@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Place } from 'src/interfaces/place.interface';
+import { Place, UpdatePlace } from 'src/interfaces/place.interface';
 import { SearchPlace } from 'src/interfaces/search-place.interface';
 
 @Injectable()
@@ -12,6 +12,9 @@ export class PlaceService {
       select: {
         id: true,
         name: true,
+      },
+      orderBy: {
+        id: 'asc',
       }
     });
   }
@@ -24,7 +27,7 @@ export class PlaceService {
     return await this.prisma.place.create({ data });
   }
 
-  async updatePlaceById(id: number, data: Place): Promise<Place> {
+  async updatePlaceById(id: number, data: UpdatePlace): Promise<UpdatePlace> {
     return await this.prisma.place.update({ where: { id }, data });
   }
 
